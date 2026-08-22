@@ -1,10 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-from tensorflow.keras.models import load_model
-
 from utils.preprocess import preprocess_image
-from semantic_analyzer import analyze_semantics
 
 import os
 import pickle
@@ -42,12 +39,14 @@ deepfake_model_path = os.path.join(
 # =====================================================
 #
 # IMPORTANT:
-# Do NOT load the model when the application starts.
+# TensorFlow is NOT imported when the application
+# starts.
 #
-# Render needs Flask/Gunicorn to start first so that
-# Render can detect the PORT.
+# This allows Gunicorn/Render to start the Flask
+# application first.
 #
-# The model will be loaded only when /analyze is called.
+# TensorFlow and the deepfake model are loaded only
+# when /analyze is actually called.
 # =====================================================
 
 deepfake_model = None
@@ -58,6 +57,13 @@ def get_deepfake_model():
     global deepfake_model
 
     if deepfake_model is None:
+
+        print(
+            "🧠 Loading TensorFlow..."
+        )
+
+        # Import TensorFlow only when needed
+        from tensorflow.keras.models import load_model
 
         print(
             "🧠 Loading Deepfake AI Model..."
@@ -75,6 +81,25 @@ def get_deepfake_model():
 
 
 # =====================================================
+# SEMANTIC ANALYSIS
+# =====================================================
+#
+# IMPORTANT:
+# semantic_analyzer is imported only when image
+# analysis is requested.
+#
+# This prevents PyTorch + Transformers + BLIP from
+# loading during Gunicorn startup.
+# =====================================================
+
+def get_semantic_analyzer():
+
+    from semantic_analyzer import analyze_semantics
+
+    return analyze_semantics
+
+
+# =====================================================
 # LOAD FAKE NEWS MODEL
 # =====================================================
 
@@ -82,6 +107,10 @@ news_model_path = os.path.join(
     BASE_DIR,
     "news_model.pkl"
 )
+
+
+news_model = None
+news_vectorizer = None
 
 
 try:
@@ -120,7 +149,9 @@ except Exception as error:
         "❌ Failed to load Fake News model:"
     )
 
-    print(error)
+    print(
+        error
+    )
 
 
 # =====================================================
@@ -156,8 +187,8 @@ def health_check():
         "message":
             "VeriFrame AI Service is running",
 
-        # Model is intentionally NOT loaded
-        # during startup.
+        # Deepfake model is intentionally loaded
+        # only when /analyze is called.
         "deepfakeModel":
             deepfake_model is not None,
 
@@ -246,9 +277,9 @@ def analyze():
         # GET DEEPFAKE MODEL
         # =============================================
         #
-        # The model is loaded here for the first time.
-        # This prevents Render startup from getting stuck
-        # while loading TensorFlow/model files.
+        # TensorFlow is imported here.
+        # The model is loaded only when an image
+        # actually needs to be analyzed.
         # =============================================
 
         model = get_deepfake_model()
@@ -291,15 +322,48 @@ def analyze():
         )
 
 
-        semantic_result = analyze_semantics(
-            image_path
-        )
+        try:
+
+            analyze_semantics = (
+                get_semantic_analyzer()
+            )
+
+
+            semantic_result = (
+                analyze_semantics(
+                    image_path
+                )
+            )
+
+
+        except Exception as semantic_error:
+
+            print(
+                "⚠️ Semantic Analysis Error:",
+                semantic_error
+            )
+
+
+            semantic_result = {
+
+                "success": False,
+
+                "description": None,
+
+                "message":
+                    str(
+                        semantic_error
+                    )
+
+            }
 
 
         if semantic_result["success"]:
 
             semantic_description = (
-                semantic_result["description"]
+                semantic_result[
+                    "description"
+                ]
             )
 
         else:
@@ -630,13 +694,16 @@ if __name__ == "__main__":
     )
 
 
+    port = int(
+        os.environ.get(
+            "PORT",
+            10000
+        )
+    )
+
+
     app.run(
         host="0.0.0.0",
-        port=int(
-            os.environ.get(
-                "PORT",
-                10000
-            )
-        ),
+        port=port,
         debug=False
     )
