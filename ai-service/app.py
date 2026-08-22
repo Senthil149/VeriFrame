@@ -10,6 +10,10 @@ import os
 import pickle
 
 
+# =====================================================
+# FLASK APP
+# =====================================================
+
 app = Flask(__name__)
 CORS(app)
 
@@ -24,7 +28,7 @@ BASE_DIR = os.path.dirname(
 
 
 # =====================================================
-# LOAD DEEPFAKE MODEL
+# DEEPFAKE MODEL PATH
 # =====================================================
 
 deepfake_model_path = os.path.join(
@@ -33,14 +37,41 @@ deepfake_model_path = os.path.join(
 )
 
 
-deepfake_model = load_model(
-    deepfake_model_path
-)
+# =====================================================
+# DEEPFAKE MODEL
+# =====================================================
+#
+# IMPORTANT:
+# Do NOT load the model when the application starts.
+#
+# Render needs Flask/Gunicorn to start first so that
+# Render can detect the PORT.
+#
+# The model will be loaded only when /analyze is called.
+# =====================================================
+
+deepfake_model = None
 
 
-print(
-    "✅ Deepfake AI Model Loaded Successfully"
-)
+def get_deepfake_model():
+
+    global deepfake_model
+
+    if deepfake_model is None:
+
+        print(
+            "🧠 Loading Deepfake AI Model..."
+        )
+
+        deepfake_model = load_model(
+            deepfake_model_path
+        )
+
+        print(
+            "✅ Deepfake AI Model Loaded Successfully"
+        )
+
+    return deepfake_model
 
 
 # =====================================================
@@ -112,7 +143,10 @@ os.makedirs(
 # HEALTH CHECK
 # =====================================================
 
-@app.route("/", methods=["GET"])
+@app.route(
+    "/",
+    methods=["GET"]
+)
 def health_check():
 
     return jsonify({
@@ -122,6 +156,8 @@ def health_check():
         "message":
             "VeriFrame AI Service is running",
 
+        # Model is intentionally NOT loaded
+        # during startup.
         "deepfakeModel":
             deepfake_model is not None,
 
@@ -207,10 +243,22 @@ def analyze():
 
 
         # =============================================
+        # GET DEEPFAKE MODEL
+        # =============================================
+        #
+        # The model is loaded here for the first time.
+        # This prevents Render startup from getting stuck
+        # while loading TensorFlow/model files.
+        # =============================================
+
+        model = get_deepfake_model()
+
+
+        # =============================================
         # DEEPFAKE PREDICTION
         # =============================================
 
-        prediction = deepfake_model.predict(
+        prediction = model.predict(
             processed,
             verbose=0
         )
@@ -571,9 +619,7 @@ if __name__ == "__main__":
 
     print(
         "🧠 Deepfake Model:",
-        "READY"
-        if deepfake_model
-        else "NOT READY"
+        "LOADED ON DEMAND"
     )
 
     print(
@@ -584,8 +630,13 @@ if __name__ == "__main__":
     )
 
 
-app.run(
-    host="0.0.0.0",
-    port=int(os.environ.get("PORT", 10000)),
-    debug=False
-)
+    app.run(
+        host="0.0.0.0",
+        port=int(
+            os.environ.get(
+                "PORT",
+                10000
+            )
+        ),
+        debug=False
+    )
