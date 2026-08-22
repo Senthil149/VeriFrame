@@ -1,0 +1,31 @@
+# Python virtual environments
+.venv/
+venv/
+ai-service/venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# AI service uploads
+ai-service/uploads/*
+
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Frontend build files
+frontend/dist/
+frontend/build/
+
+# Logs
+*.log
+
+# Training datasets
+datasets/
+# Backend uploaded images
+backend/uploads/*

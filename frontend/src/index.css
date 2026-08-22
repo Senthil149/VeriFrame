@@ -1,0 +1,353 @@
+@import "tailwindcss";
+
+/* =====================================================
+   VERIFRAME THEME SYSTEM
+===================================================== */
+
+:root {
+  /* Default Accent */
+  --accent-primary: #10b981;
+  --accent-hover: #059669;
+  --accent-light: #34d399;
+  --accent-soft: rgba(16, 185, 129, 0.15);
+
+  /* Backward-compatible variable */
+  --vf-accent: #10b981;
+}
+
+
+/* =====================================================
+   BODY
+===================================================== */
+
+body {
+  margin: 0;
+
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+
+/* =====================================================
+   DARK MODE
+===================================================== */
+
+body.dark-mode {
+  background-color: #020617;
+  color: #ffffff;
+}
+
+
+/* =====================================================
+   LIGHT MODE
+===================================================== */
+
+body.light-mode {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+
+/* =====================================================
+   LIGHT MODE - MAIN BACKGROUNDS
+===================================================== */
+
+body.light-mode .bg-slate-950 {
+  background-color: #e2e8f0 !important;
+}
+
+body.light-mode .bg-slate-900 {
+  background-color: #ffffff !important;
+}
+
+body.light-mode .bg-slate-800 {
+  background-color: #e2e8f0 !important;
+}
+
+
+/* =====================================================
+   LIGHT MODE - BORDERS
+===================================================== */
+
+body.light-mode .border-slate-800 {
+  border-color: #cbd5e1 !important;
+}
+
+body.light-mode .border-slate-700 {
+  border-color: #cbd5e1 !important;
+}
+
+
+/* =====================================================
+   LIGHT MODE - TEXT
+===================================================== */
+
+body.light-mode .text-white {
+  color: #0f172a !important;
+}
+
+body.light-mode .text-gray-300 {
+  color: #334155 !important;
+}
+
+body.light-mode .text-gray-400 {
+  color: #475569 !important;
+}
+
+body.light-mode .text-gray-500 {
+  color: #64748b !important;
+}
+
+
+/* =====================================================
+   LIGHT MODE - INPUTS
+===================================================== */
+
+body.light-mode input,
+body.light-mode select,
+body.light-mode textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+
+/* =====================================================
+   LIGHT MODE - PLACEHOLDER
+===================================================== */
+
+body.light-mode input::placeholder,
+body.light-mode textarea::placeholder {
+  color: #64748b !important;
+}
+
+
+/* =====================================================
+   ANIMATION CONTROL
+===================================================== */
+
+body.disable-animations *,
+body.disable-animations *::before,
+body.disable-animations *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+
+/* =====================================================
+   COMPACT MODE
+===================================================== */
+
+body.compact-mode .p-10 {
+  padding: 1.5rem !important;
+}
+
+body.compact-mode .p-8 {
+  padding: 1.25rem !important;
+}
+
+body.compact-mode .p-6 {
+  padding: 1rem !important;
+}
+
+body.compact-mode .gap-8 {
+  gap: 1rem !important;
+}
+
+body.compact-mode .gap-6 {
+  gap: 1rem !important;
+}
+
+body.compact-mode .gap-5 {
+  gap: 0.75rem !important;
+}
+
+
+/* =====================================================
+   ACCENT COLOR UTILITIES
+===================================================== */
+
+/* Background */
+
+.accent-bg {
+  background-color: var(--accent-primary) !important;
+}
+
+.accent-bg:hover {
+  background-color: var(--accent-hover) !important;
+}
+
+
+/* Text */
+
+.accent-text {
+  color: var(--accent-primary) !important;
+}
+
+
+/* Light Text */
+
+.accent-text-light {
+  color: var(--accent-light) !important;
+}
+
+
+/* Border */
+
+.accent-border {
+  border-color: var(--accent-primary) !important;
+}
+
+
+/* Soft Background */
+
+.accent-soft {
+  background-color: var(--accent-soft) !important;
+}
+
+
+/* Ring */
+
+.accent-ring {
+  --tw-ring-color: var(--accent-primary) !important;
+}
+
+
+/* Button */
+
+.accent-button {
+  background-color: var(--accent-primary) !important;
+  color: #ffffff !important;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.accent-button:hover {
+  background-color: var(--accent-hover) !important;
+}
+
+
+/* Checkbox */
+
+input[type="checkbox"].accent-checkbox {
+  accent-color: var(--accent-primary);
+}
+
+
+/* Range */
+
+input[type="range"] {
+  accent-color: var(--accent-primary);
+}
+
+
+/* =====================================================
+   ACCENT OUTLINE
+===================================================== */
+
+.accent-outline {
+  border: 1px solid var(--accent-primary) !important;
+}
+
+
+/* =====================================================
+   ACCENT GLOW
+===================================================== */
+
+.accent-glow {
+  box-shadow:
+    0 0 25px var(--accent-soft);
+}
+
+
+/* =====================================================
+   ACCENT FOCUS
+===================================================== */
+
+.accent-focus:focus {
+  outline: none !important;
+
+  border-color: var(--accent-primary) !important;
+
+  box-shadow:
+    0 0 0 3px var(--accent-soft);
+}
+
+
+/* =====================================================
+   ACCENT LINK
+===================================================== */
+
+.accent-link {
+  color: var(--accent-primary);
+  transition: color 0.2s ease;
+}
+
+.accent-link:hover {
+  color: var(--accent-light);
+}
+
+
+/* =====================================================
+   ACCENT DIVIDER
+===================================================== */
+
+.accent-divider {
+  border-color: var(--accent-primary) !important;
+  opacity: 0.35;
+}
+
+
+/* =====================================================
+   ACCENT DOT
+===================================================== */
+
+.accent-dot {
+  background-color: var(--accent-primary) !important;
+}
+
+
+/* =====================================================
+   ACCENT BADGE
+===================================================== */
+
+.accent-badge {
+  background-color: var(--accent-soft) !important;
+  color: var(--accent-light) !important;
+  border: 1px solid var(--accent-primary) !important;
+}
+
+
+/* =====================================================
+   SELECTION
+===================================================== */
+
+::selection {
+  background-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+
+/* =====================================================
+   SCROLLBAR
+===================================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-primary);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+}
