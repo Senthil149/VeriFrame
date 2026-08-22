@@ -8,33 +8,79 @@ from transformers import (
 
 
 # =====================================================
-# LOAD BLIP MODEL
+# MODEL NAME
 # =====================================================
 
 MODEL_NAME = "Salesforce/blip-image-captioning-base"
 
-print("🧠 Loading Semantic Analysis model...")
 
-processor = AutoProcessor.from_pretrained(
-    MODEL_NAME
-)
+# =====================================================
+# MODEL VARIABLES
+# =====================================================
 
-model = BlipForConditionalGeneration.from_pretrained(
-    MODEL_NAME
-)
+processor = None
+model = None
 
-model.eval()
 
-print("✅ Semantic Analysis model loaded successfully")
+# =====================================================
+# LOAD BLIP MODEL ONLY WHEN NEEDED
+# =====================================================
+
+def get_semantic_model():
+
+    global processor
+    global model
+
+
+    if processor is None or model is None:
+
+        print(
+            "🧠 Loading Semantic Analysis model..."
+        )
+
+
+        processor = AutoProcessor.from_pretrained(
+            MODEL_NAME
+        )
+
+
+        model = (
+            BlipForConditionalGeneration
+            .from_pretrained(
+                MODEL_NAME
+            )
+        )
+
+
+        model.eval()
+
+
+        print(
+            "✅ Semantic Analysis model loaded successfully"
+        )
+
+
+    return processor, model
 
 
 # =====================================================
 # ANALYZE IMAGE
 # =====================================================
 
-def analyze_semantics(image_path):
+def analyze_semantics(
+    image_path
+):
 
     try:
+
+        # ---------------------------------------------
+        # LOAD MODEL WHEN NEEDED
+        # ---------------------------------------------
+
+        processor, model = (
+            get_semantic_model()
+        )
+
 
         # ---------------------------------------------
         # OPEN IMAGE
@@ -42,7 +88,9 @@ def analyze_semantics(image_path):
 
         image = Image.open(
             image_path
-        ).convert("RGB")
+        ).convert(
+            "RGB"
+        )
 
 
         # ---------------------------------------------
@@ -78,8 +126,12 @@ def analyze_semantics(image_path):
 
 
         return {
+
             "success": True,
-            "description": description
+
+            "description":
+                description
+
         }
 
 
@@ -90,8 +142,14 @@ def analyze_semantics(image_path):
             error
         )
 
+
         return {
+
             "success": False,
+
             "description": None,
-            "message": str(error)
+
+            "message":
+                str(error)
+
         }
