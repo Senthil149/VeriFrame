@@ -1,24 +1,19 @@
 import axios from "axios";
 
-
 // =====================================================
 // FAKE NEWS API
 // =====================================================
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api/news",
+  baseURL: `${import.meta.env.VITE_API_URL}/api/news`,
 });
-
 
 // =====================================================
 // ANALYZE NEWS
 // =====================================================
 
 export const analyzeNews = async (text) => {
-
-  const token =
-    localStorage.getItem("token");
-
+  const token = localStorage.getItem("token");
 
   const response = await API.post(
     "/analyze",
@@ -34,7 +29,6 @@ export const analyzeNews = async (text) => {
       },
     }
   );
-
 
   return response.data;
 };
