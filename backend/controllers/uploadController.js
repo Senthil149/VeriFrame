@@ -88,7 +88,7 @@ const uploadImage = async (req, res) => {
     const response =
       await axios.post(
 
-        "http://localhost:5001/analyze",
+        "https://veriframe-ai-service.onrender.com/analyze",
 
         form,
 

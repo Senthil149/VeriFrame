@@ -73,8 +73,7 @@ const analyzeNews = async (
 
     const response =
       await axios.post(
-
-        "http://localhost:5001/analyze-news",
+"https://veriframe-ai-service.onrender.com/analyze-news",
 
         {
           text:
